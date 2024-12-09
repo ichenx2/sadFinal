@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 // ParkingLot class
@@ -38,13 +40,28 @@ class ParkingLot {
 // Car class
 class Car {
     private String licensePlate;
+    private Date entryTime;
+    private Date exitTime;
 
     public Car(String licensePlate) {
         this.licensePlate = licensePlate;
+        this.entryTime = new Date(); // 記錄進入時間
     }
 
     public String getLicensePlate() {
         return licensePlate;
+    }
+
+    public Date getEntryTime() {
+        return entryTime;
+    }
+
+    public Date getExitTime() {
+        return exitTime;
+    }
+
+    public void setExitTime(Date exitTime) {
+        this.exitTime = exitTime;
     }
 }
 
@@ -56,8 +73,12 @@ public class ParkingManagementGUI {
     private JButton enterButton;
     private ParkingLot parkingLot;
     private ArrayList<Car> parkedCars; // 存放進入停車場的車輛
+    private SimpleDateFormat dateFormat;
 
     public ParkingManagementGUI() {
+        // 初始化日期格式
+        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
         // 初始化停車場，假設總車位為100
         parkingLot = new ParkingLot(100);
         parkedCars = new ArrayList<>();
@@ -108,7 +129,10 @@ public class ParkingManagementGUI {
                     parkedCars.add(car);
                     parkingLot.decrementAvailableSlots(); // 減少一個車位
 
-                    JOptionPane.showMessageDialog(frame, "車牌號碼 " + car.getLicensePlate() + " 歡迎進入！", "成功", JOptionPane.INFORMATION_MESSAGE);
+                    String entryTimeStr = dateFormat.format(car.getEntryTime());
+                    String message = "車牌號碼 " + car.getLicensePlate() + " 歡迎進入！\n進入時間：" + entryTimeStr;
+
+                    JOptionPane.showMessageDialog(frame, message, "成功", JOptionPane.INFORMATION_MESSAGE);
 
                     // 更新主畫面顯示
                     resultLabel.setText("剩餘車位：" + parkingLot.getAvailableSlots() + " / " + parkingLot.getTotalSlots());
